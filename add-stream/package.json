@@ -1,0 +1,8 @@
+{
+  "name": "add-stream",
+  "version": "1.0.0",
+  "description": "Updates streams array in user entity in DynamoDB",
+  "main": "index.js",
+  "author": "Daniel Beckwith",
+  "license": "MIT"
+}
