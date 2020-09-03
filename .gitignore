@@ -103,7 +103,8 @@ dist
 # TernJS port file
 .tern-port
 
-
-
 # Terraform
 terraform/.terraform
+
+# Local lambda invoke output
+output.json
