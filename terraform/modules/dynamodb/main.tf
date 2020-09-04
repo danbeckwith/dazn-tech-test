@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "user_streams" {
-  name           = "UserStreamsTable"
+  name           = "UserStreams"
   billing_mode   = "PROVISIONED"
   read_capacity  = 20
   write_capacity = 20

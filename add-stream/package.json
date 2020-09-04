@@ -4,5 +4,8 @@
   "description": "Updates streams array in user entity in DynamoDB",
   "main": "index.js",
   "author": "Daniel Beckwith",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    
+  }
 }
