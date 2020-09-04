@@ -1,7 +1,7 @@
 resource "aws_dynamodb_table_item" "example_user" {
   table_name = aws_dynamodb_table.user_streams.name
   hash_key   = aws_dynamodb_table.user_streams.hash_key
-
+# TODO read these in from file if possible
   item = <<ITEM
 {
     "UserId": {

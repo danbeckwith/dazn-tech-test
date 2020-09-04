@@ -43,3 +43,11 @@ resource "aws_iam_role_policy_attachment" "read_update_user_streams" {
   role = aws_iam_role.lambda_assume_role.name
   policy_arn = var.read_update_user_streams_policy_arn
 }
+
+output "invoke_arn" {
+  value = aws_lambda_function.add_stream.invoke_arn
+}
+
+output "function_name" {
+  value = aws_lambda_function.add_stream.function_name
+}
