@@ -2,8 +2,11 @@
 const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 
-exports.handler = async (event, context, callback) => {
+exports.handler = async event => {
     console.log("Starting...");
+
+    console.log("event");
+    console.log(JSON.stringify(event));
 
     const params = {
         Key: {
