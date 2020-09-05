@@ -5,7 +5,11 @@
   "main": "index.js",
   "author": "Daniel Beckwith",
   "license": "MIT",
+  "devDependencies": {
+    "aws-sdk": "^2.747.0",
+    "jest": "^26.4.2"
+  },
   "scripts": {
-    
+    "test": "jest"
   }
 }
