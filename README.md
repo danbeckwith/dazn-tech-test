@@ -15,3 +15,6 @@ curl -X POST -H "Content-Type: application/json" \
  -d '{"streamId":"456"}' \                 
  https://stafxrasn4.execute-api.eu-west-2.amazonaws.com/test/users/123/streams
 ```
+
+
+<!-- TODO add postman pack -->
