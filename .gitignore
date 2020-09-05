@@ -108,3 +108,5 @@ terraform/.terraform
 
 # Local lambda invoke output
 output.json
+
+*.zip
