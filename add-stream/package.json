@@ -11,8 +11,9 @@
   },
   "scripts": {
     "test": "yarn install && jest",
-    "build": "../build-lambda.sh",
+    "build": "rm add-stream.zip && zip -rq add-stream.zip index.js lib/*",
+    "release": "aws s3api put-object --bucket dazn-tech-test-lambda --key add-stream --body ./add-stream.zip",
     "deploy": "aws lambda update-function-code --function-name arn:aws:lambda:eu-west-2:757782070749:function:add-stream --s3-bucket dazn-tech-test-lambda --s3-key add-stream",
-    "build-deploy": "yarn run build && yarn run deploy"
+    "build-release-deploy": "yarn run build && yarn run release && yarn run deploy"
   }
 }
