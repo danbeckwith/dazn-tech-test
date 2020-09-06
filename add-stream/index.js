@@ -9,9 +9,10 @@ exports.handler = async event => {
 
     // Parse Params
     const { userId } = event.pathParameters;
-    const stream = JSON.parse(event.body);
+    const { streamId } = JSON.parse(event.body);
 
 // TODO validation of input params
+// TODO remove log lines
 
     // Update with new stream
     const updateParams = {
@@ -21,19 +22,20 @@ exports.handler = async event => {
         },
         ExpressionAttributeNames: { '#s': 'Streams' },
         ExpressionAttributeValues: {
-            ':s': [stream.streamId],
-            ':MAX': 3
+            ':s': [streamId],
+            ':MAX': 3,
+            ':emptyList': []
         },
-        ConditionExpression: 'size (#s) < :MAX',
-        UpdateExpression: 'SET #s = list_append (#s, :s)',
+        ConditionExpression: 'size (#s) < :MAX OR attribute_not_exists(Streams)',
+        UpdateExpression: 'SET #s = list_append (if_not_exists(#s, :emptyList), :s)',
         ReturnValues: 'UPDATED_NEW'
-    };
+    }
 
     let streams;
     let response;
 
     try {
-        console.log(`Attempting to update user [${userId}] with stream ${stream.streamId}`)
+        console.log(`Attempting to update user [${userId}] with stream ${streamId}`)
         const result = await dynamodb.update(updateParams).promise();
         streams = result.Attributes.Streams;
         console.log(`Update sucessful, user [${userId}] is watching streams: [${streams}]`)
@@ -46,20 +48,26 @@ exports.handler = async event => {
             "body": JSON.stringify({
                 "status": "OK",
                 "streams": streams,
-                "message": `Stream [${stream.streamId}] was sucessfully added to ${userId}`
+                "message": `Stream [${streamId}] was sucessfully added to ${userId}`
             }),
             "isBase64Encoded": false
         };
 
     } catch (err) {
-        console.error(`Failed to update user [${userId}] with stream ${stream.streamId}: ${err}`);
-        
+        console.error(`Failed to update user [${userId}] with stream ${streamId}: ${err}`);
+
+        let message = "User is already watching three streams";
+
+        if (err.statusCode === 500 || err.statusCode === 503) {
+            message = "An error occured on the server side"
+        }
+
         response = {
-            "statusCode": 400,
+            "statusCode": err.statusCode,
             "headers": {
                 "Content-Type": "application/json"
             },
-            "body": JSON.stringify({"status":"ERROR","message":"User is already watching three streams"}),
+            "body": JSON.stringify({"status":"ERROR","message":message}),
             "isBase64Encoded": false
         };
     }
