@@ -7,13 +7,12 @@ const dynamodb = new DocumentClient({apiVersion: '2012-08-10'});
 exports.handler = async event => {
     console.log("Starting...");
 
-    console.log("event");
-    console.log(JSON.stringify(event));
-
+    // Parse Params
     const { userId } = event.pathParameters;
     const stream = JSON.parse(event.body);
 
-    const params = {
+    // Get users streams
+    const getParams = {
         Key: {
             "UserId": userId
         },
@@ -24,7 +23,7 @@ exports.handler = async event => {
     let streams;
 
     try {
-        const result = await dynamodb.get(params).promise();
+        const result = await dynamodb.get(getParams).promise();
         console.log(result)
         streams = result.Item.Streams
     } catch (err) {
@@ -33,7 +32,33 @@ exports.handler = async event => {
 
     console.log(`User [${userId}] is currently watching streams: ${JSON.stringify(streams)}`);
 
+    // Update with new stream
+    const updateParams = {
+        TableName: "UserStreams",
+        Key: {
+            "UserId": userId
+        },
+        ExpressionAttributeNames: { '#s': 'Streams' },
+        ExpressionAttributeValues: {
+            ':s': [stream.streamId],
+            ':MAX': 3
+        },
+        ConditionExpression: 'size (#s) < :MAX',
+        UpdateExpression: 'SET #s = list_append (#s, :s)'
+    };
+
+
+    try {
+        const result = await dynamodb.update(updateParams).promise();
+        console.log(result);
+    } catch (err) {
+        console.log(err);
+    }
+
+    // Build and send response
+
     const responseBody = {
+        // TODO change message
         "message": `User [${userId}] has ${streams.length || 0} active streams`,
         "status": "OK",
     };
