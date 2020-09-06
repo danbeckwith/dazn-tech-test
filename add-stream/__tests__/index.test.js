@@ -1,9 +1,9 @@
-const updatePromise = jest.fn()
-const mockUpdateValue = jest.fn(() => ({ promise: updatePromise }))
+const promise = jest.fn();
+const mockUpdate = jest.fn(() => ({ promise }));
 
 jest.mock('aws-sdk/clients/dynamodb', () => ({
     DocumentClient: jest.fn().mockImplementation(() => ({ 
-        update: mockUpdateValue
+        update: mockUpdate
     }))
 }));
 
@@ -17,7 +17,7 @@ const buildDynamoError = (message, code, statusCode) => {
     error.code = code;
     error.statusCode = statusCode;
     
-    return error
+    return error;
 }
 
 beforeEach(() => {
@@ -43,13 +43,13 @@ test('attempts conditional update with the provided parameters', async () => {
 
     const res = await handler({ "pathParameters": { "userId": userId }, "body": `{ \"streamId\": \"${streamId}\" }` });
     
-    expect(mockUpdateValue).toHaveBeenCalledWith(expectedParams);
+    expect(mockUpdate).toHaveBeenCalledWith(expectedParams);
 });
 
 test('returns 200 and list of active streams if user is watching less than three at time of request', async () => {
-    const streams = ['abc', streamId]
-    const expectedResponseBody = {"status":"OK","streams":streams,"message":`Stream [${streamId}] was sucessfully added to ${userId}`}
-    updatePromise.mockResolvedValue({ Attributes: { Streams: streams }});
+    const streams = ['abc', streamId];
+    const expectedResponseBody = {"status":"OK","streams":streams,"message":`Stream [${streamId}] was sucessfully added to ${userId}`};
+    promise.mockResolvedValue({ Attributes: { Streams: streams }});
 
     const res = await handler({ "pathParameters": { "userId": userId }, "body": `{ \"streamId\": \"${streamId}\" }` });
 
@@ -58,10 +58,10 @@ test('returns 200 and list of active streams if user is watching less than three
 });
 
 test('returns 400 and error message if user is watching three streams at time of request', async () => {
-    const expectedResponseBody = {"status":"ERROR","message":"User is already watching three streams"}
+    const expectedResponseBody = {"status":"ERROR","message":"User is already watching three streams"};
 
     const mockError = buildDynamoError("The conditional request failed", "ConditionalCheckFailedException", 400);
-    updatePromise.mockRejectedValue(mockError);
+    promise.mockRejectedValue(mockError);
 
     const res = await handler({ "pathParameters": { "userId": userId }, "body": `{ \"streamId\": \"${streamId}\" }` });
 
@@ -70,7 +70,7 @@ test('returns 400 and error message if user is watching three streams at time of
 });
 
 test('returns 400 and error message if parameters are not valid strings', async () => {
-    const expectedResponseBody = {"status":"ERROR","message":"userId and streamId must be valid strings"}
+    const expectedResponseBody = {"status":"ERROR","message":"userId and streamId must be valid strings"};
 
     const res = await handler({ "pathParameters": { "userId": {"message":"hello"} }, "body": `{ \"streamId\": \"${streamId}\" }` });
 
@@ -79,20 +79,19 @@ test('returns 400 and error message if parameters are not valid strings', async 
 });
 
 test('returns 400 and error message if any parameters are empty strings', async () => {
-    const expectedResponseBody = {"status":"ERROR","message":"userId and streamId must not be empty strings"}
+    const expectedResponseBody = {"status":"ERROR","message":"userId and streamId must not be empty strings"};
 
     const res = await handler({ "pathParameters": { "userId": "" }, "body": `{ \"streamId\": \"${streamId}\" }` });
 
     expect(res.statusCode).toBe(400);
     expect(res.body).toBe(JSON.stringify(expectedResponseBody));
 });
-// TODO test to return error for other client side errors
 
 test('returns 500 and error message if Dynamo returns a bad request error', async () => {
-    const expectedResponseBody = {"status":"ERROR","message":"Could not complete the request due to an exception"}
+    const expectedResponseBody = {"status":"ERROR","message":"Could not complete the request due to an exception"};
 
     const mockError = buildDynamoError("Current throughput quota exceeded", "RequestLimitExceeded", 400);
-    updatePromise.mockRejectedValue(mockError);
+    promise.mockRejectedValue(mockError);
 
     const res = await handler({ "pathParameters": { "userId": userId }, "body": `{ \"streamId\": \"${streamId}\" }` });
 
@@ -100,15 +99,14 @@ test('returns 500 and error message if Dynamo returns a bad request error', asyn
     expect(res.body).toBe(JSON.stringify(expectedResponseBody));
 });
 
-// TODO tests if request failed for other reasons
 test('returns 500 and error message when Dynamo returns a server error', async () => {
-    const expectedResponseBody = {"status":"ERROR","message":"Could not complete the request due to an exception"}
+    const expectedResponseBody = {"status":"ERROR","message":"Could not complete the request due to an exception"};
 
     const mockError = buildDynamoError("A serverside error occured", "InternalServerError", 500);
-    updatePromise.mockRejectedValue(mockError);
+    promise.mockRejectedValue(mockError);
 
     const res = await handler({ "pathParameters": { "userId": userId }, "body": `{ \"streamId\": \"${streamId}\" }` });
 
     expect(res.statusCode).toBe(500);
     expect(res.body).toBe(JSON.stringify(expectedResponseBody));
-})
+});

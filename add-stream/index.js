@@ -16,12 +16,12 @@ exports.handler = async event => {
     }
 
     try {
-        console.log(`Attempting to update user [${userId}] with stream ${streamId}`)
+        console.log(`Attempting to update user [${userId}] with stream ${streamId}`);
         
-        const result = await addStreamToUser(userId, streamId)
+        const result = await addStreamToUser(userId, streamId);
         const streams = result.Attributes.Streams;
         
-        console.log(`Update sucessful, user [${userId}] is watching streams: [${streams}]`)
+        console.log(`Update sucessful, user [${userId}] can watch stream: [${streamId}]`);
 
         return buildSuccessfulResponse(userId, streamId, streams);
     } catch (err) {

@@ -1,3 +1,5 @@
+'use-strict'
+
 const { DocumentClient } = require('aws-sdk/clients/dynamodb');
 const dynamodb = new DocumentClient({apiVersion: '2012-08-10'});
 

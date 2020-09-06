@@ -1,3 +1,5 @@
+'use-strict'
+
 exports.buildSuccessfulResponse = (userId, streamId, streams) => ({
     "statusCode": 200,
     "headers": {
@@ -18,4 +20,4 @@ exports.buildErrorResponse = (statusCode, message) => ({
     },
     "body": JSON.stringify({"status":"ERROR","message":message}),
     "isBase64Encoded": false
-})
+});
