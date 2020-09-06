@@ -30,5 +30,3 @@ module "add_stream_api" {
   add_stream_lambda_function_name = module.add_stream_lambda.function_name
   tags = local.tags
 }
-
-# TODO clean up Terraform code/parameterise/break up files
