@@ -24,6 +24,10 @@ curl -X POST -H "Content-Type: application/json" \
 ```
 or use the Postman config files in `./postman`
 
+The Terraform config creates two items in the DynamoDB table automatically so you can begin testing straight away:
+- UserId: 'user1' only has 1 stream currently being watched
+- UserId: 'user2' is currently watching 3 streams
+
 ## Scalability Strategy
 
 As this project has been provisioned solely with AWS Resources it will be highly scalable. 
