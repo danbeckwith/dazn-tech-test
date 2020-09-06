@@ -14,3 +14,5 @@ module "add_stream_api" {
   add_stream_lambda_invoke_arn = module.add_stream_lambda.invoke_arn
   add_stream_lambda_function_name = module.add_stream_lambda.function_name
 }
+
+# TODO clean up Terraform code/parameterise/break up files

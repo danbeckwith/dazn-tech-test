@@ -11,26 +11,7 @@ exports.handler = async event => {
     const { userId } = event.pathParameters;
     const stream = JSON.parse(event.body);
 
-    // Get users streams
-    const getParams = {
-        Key: {
-            "UserId": userId
-        },
-        TableName: "UserStreams",
-        AttributesToGet: ['Streams']
-    }
-
-    let streams;
-
-    try {
-        const result = await dynamodb.get(getParams).promise();
-        console.log(result)
-        streams = result.Item.Streams
-    } catch (err) {
-        console.error(err);
-    }
-
-    console.log(`User [${userId}] is currently watching streams: ${JSON.stringify(streams)}`);
+// TODO validation of input params
 
     // Update with new stream
     const updateParams = {
@@ -44,35 +25,48 @@ exports.handler = async event => {
             ':MAX': 3
         },
         ConditionExpression: 'size (#s) < :MAX',
-        UpdateExpression: 'SET #s = list_append (#s, :s)'
+        UpdateExpression: 'SET #s = list_append (#s, :s)',
+        ReturnValues: 'UPDATED_NEW'
     };
 
+    let streams;
+    let response;
 
     try {
+        console.log(`Attempting to update user [${userId}] with stream ${stream.streamId}`)
         const result = await dynamodb.update(updateParams).promise();
-        console.log(result);
+        streams = result.Attributes.Streams;
+        console.log(`Update sucessful, user [${userId}] is watching streams: [${streams}]`)
+
+        response = {
+            "statusCode": 200,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "body": JSON.stringify({
+                "status": "OK",
+                "streams": streams,
+                "message": `Stream [${stream.streamId}] was sucessfully added to ${userId}`
+            }),
+            "isBase64Encoded": false
+        };
+
     } catch (err) {
-        console.log(err);
+        console.error(`Failed to update user [${userId}] with stream ${stream.streamId}: ${err}`);
+        
+        response = {
+            "statusCode": 400,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "body": JSON.stringify({"status":"ERROR","message":"User is already watching three streams"}),
+            "isBase64Encoded": false
+        };
     }
-
-    // Build and send response
-
-    const responseBody = {
-        // TODO change message
-        "message": `User [${userId}] has ${streams.length || 0} active streams`,
-        "status": "OK",
-    };
-
-    const response = {
-        "statusCode": 200,
-        "headers": {
-            "Content-Type": "application/json"
-        },
-        "body": JSON.stringify(responseBody),
-        "isBase64Encoded": false
-    };
 
     console.log("Done...");
 
     return response;
 }
+
+// TODO move scripts in package.json
