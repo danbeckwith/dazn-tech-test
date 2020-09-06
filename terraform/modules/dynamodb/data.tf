@@ -7,18 +7,18 @@ resource "aws_dynamodb_table_item" "example_user" {
   "Streams": {
     "L": [
       {
-        "S": "39084902"
+        "S": "abc"
       },
       {
-        "S": "ddd"
+        "S": "def"
       },
       {
-        "S": "pjfpisdkm"
+        "S": "hij"
       }
     ]
   },
   "UserId": {
-    "S": "dsad"
+    "S": "1234abcd"
   }
 }
 ITEM

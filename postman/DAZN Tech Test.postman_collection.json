@@ -1,0 +1,44 @@
+{
+	"info": {
+		"_postman_id": "8a00eda0-70f7-4f05-9163-0aa0d718e890",
+		"name": "DAZN Tech Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Add Stream",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"streamId\":\"{{streamId}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://stafxrasn4.execute-api.eu-west-2.amazonaws.com/test/users/{{userId}}/streams",
+					"protocol": "https",
+					"host": [
+						"stafxrasn4",
+						"execute-api",
+						"eu-west-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"users",
+						"{{userId}}",
+						"streams"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
