@@ -17,4 +17,6 @@ curl -X POST -H "Content-Type: application/json" \
 ```
 
 
+NOTE: Must add own account number to release command in package json
+
 <!-- TODO add postman pack -->

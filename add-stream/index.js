@@ -7,6 +7,14 @@ exports.handler = async event => {
     const { userId } = event.pathParameters;
     const { streamId } = JSON.parse(event.body);
 
+    if (typeof userId !== "string" || typeof streamId !== "string") {
+        return buildErrorResponse(400, "userId and streamId must be valid strings");
+    }
+
+    if (userId === "" || streamId === "") {
+        return buildErrorResponse(400, "userId and streamId must not be empty strings");
+    }
+
     try {
         console.log(`Attempting to update user [${userId}] with stream ${streamId}`)
         
