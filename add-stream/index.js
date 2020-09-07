@@ -16,7 +16,7 @@ exports.handler = async event => {
     }
 
     try {
-        console.log(`Attempting to update user [${userId}] with stream ${streamId}`);
+        console.log(`Attempting to update user [${userId}] with stream [${streamId}]`);
         
         const result = await addStreamToUser(userId, streamId);
         const streams = result.Attributes.Streams;
@@ -25,7 +25,7 @@ exports.handler = async event => {
 
         return buildSuccessfulResponse(userId, streamId, streams);
     } catch (err) {
-        console.error(`Failed to update user [${userId}] with stream ${streamId}: ${err}`);
+        console.error(`Failed to update user [${userId}] with stream [${streamId}]: ${err}`);
 
         const message = err.code === "ConditionalCheckFailedException" ?
             `User [${userId}] is already watching three streams` :

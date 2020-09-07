@@ -6,9 +6,6 @@ resource "aws_iam_policy" "read_update_user_streams" {
 data "aws_iam_policy_document" "read_update_user_streams" {
     statement {
         actions = [
-            "dynamodb:GetItem",
-            "dynamodb:Query",
-            "dynamodb:Scan",
             "dynamodb:UpdateItem"
         ]
 

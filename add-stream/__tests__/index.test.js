@@ -57,6 +57,24 @@ test('returns 200 and list of active streams if user is watching less than three
     expect(res.body).toBe(JSON.stringify(expectedResponseBody));
 });
 
+test('returns 400 and error message if parameters are not valid strings', async () => {
+    const expectedResponseBody = {"status":"ERROR","message":"userId and streamId must be valid strings"};
+    
+    const res = await handler({ "pathParameters": { "userId": {"message":"hello"} }, "body": `{ \"streamId\": \"${streamId}\" }` });
+    
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toBe(JSON.stringify(expectedResponseBody));
+});
+
+test('returns 400 and error message if any parameters are empty strings', async () => {
+    const expectedResponseBody = {"status":"ERROR","message":"userId and streamId must not be empty strings"};
+    
+    const res = await handler({ "pathParameters": { "userId": "" }, "body": `{ \"streamId\": \"${streamId}\" }` });
+    
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toBe(JSON.stringify(expectedResponseBody));
+});
+
 test('returns 500 and error message if user is watching three streams at time of request', async () => {
     const expectedResponseBody = {"status":"ERROR","message":`User [${userId}] is already watching three streams`};
 
@@ -66,24 +84,6 @@ test('returns 500 and error message if user is watching three streams at time of
     const res = await handler({ "pathParameters": { "userId": userId }, "body": `{ \"streamId\": \"${streamId}\" }` });
 
     expect(res.statusCode).toBe(500);
-    expect(res.body).toBe(JSON.stringify(expectedResponseBody));
-});
-
-test('returns 400 and error message if parameters are not valid strings', async () => {
-    const expectedResponseBody = {"status":"ERROR","message":"userId and streamId must be valid strings"};
-
-    const res = await handler({ "pathParameters": { "userId": {"message":"hello"} }, "body": `{ \"streamId\": \"${streamId}\" }` });
-
-    expect(res.statusCode).toBe(400);
-    expect(res.body).toBe(JSON.stringify(expectedResponseBody));
-});
-
-test('returns 400 and error message if any parameters are empty strings', async () => {
-    const expectedResponseBody = {"status":"ERROR","message":"userId and streamId must not be empty strings"};
-
-    const res = await handler({ "pathParameters": { "userId": "" }, "body": `{ \"streamId\": \"${streamId}\" }` });
-
-    expect(res.statusCode).toBe(400);
     expect(res.body).toBe(JSON.stringify(expectedResponseBody));
 });
 

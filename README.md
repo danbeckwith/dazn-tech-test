@@ -21,7 +21,7 @@ The conditional update will update the Streams array of the object if there are 
 
 ### Further work
 
-This table could be managed by a separate service which periodically removes users who are no longer online and removes streams.
+This table could be managed by a separate service which periodically removes users who are no longer online and removes streams which have finished.
 
 ## How to build and deploy
 
