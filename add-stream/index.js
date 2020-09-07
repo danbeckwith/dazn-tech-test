@@ -27,8 +27,10 @@ exports.handler = async event => {
     } catch (err) {
         console.error(`Failed to update user [${userId}] with stream ${streamId}: ${err}`);
 
-        return (err.code === "ConditionalCheckFailedException") ? 
-            buildErrorResponse(400, "User is already watching three streams") : 
-            buildErrorResponse(500, "Could not complete the request due to an exception");
+        const message = err.code === "ConditionalCheckFailedException" ?
+            `User [${userId}] is already watching three streams` :
+            "Internal Server Error"
+        
+        return buildErrorResponse(500, message);
     }
 }

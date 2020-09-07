@@ -4,7 +4,7 @@ const { DocumentClient } = require('aws-sdk/clients/dynamodb');
 const dynamodb = new DocumentClient({apiVersion: '2012-08-10'});
 
 exports.addStreamToUser = async (userId, streamId) => {
-    return await dynamodb.update({
+    return dynamodb.update({
         TableName: "UserStreams",
         Key: {
             "UserId": userId

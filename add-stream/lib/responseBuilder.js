@@ -8,7 +8,7 @@ exports.buildSuccessfulResponse = (userId, streamId, streams) => ({
     "body": JSON.stringify({
         "status": "OK",
         "streams": streams,
-        "message": `Stream [${streamId}] was sucessfully added to ${userId}`
+        "message": `Stream [${streamId}] was sucessfully added to user [${userId}]`
     }),
     "isBase64Encoded": false
 });
